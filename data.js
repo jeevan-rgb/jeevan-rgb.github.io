@@ -28,8 +28,9 @@ window.SITE = {
 
   // tipos: email, youtube, instagram, x, tiktok, github, web
   enlaces: [
-    { tipo: "youtube", url: "https://youtube.com/@latrincheraacademica?si=9Zzzkf5Oq42PKWPV" },
-    { tipo: "Research Ghate", url: "https://www.researchgate.net/profile/Rafael-Jimenez-Lopez-2?ev=hdr_xprf" },
+    { tipo: "youtube", url: "https://www.youtube.com/@latrincheraacademica" },
+    { tipo: "researchgate", url: "https://www.researchgate.net/profile/Rafael-Jimenez-Lopez-2" },
+    { tipo: "orcid", url: "https://orcid.org/0009-0008-3986-2763" },
   ],
 
   // ---------- 2. TEMAS ----------
