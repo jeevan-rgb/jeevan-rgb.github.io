@@ -28,14 +28,16 @@
   const enLinea = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   const formatear = (texto) => {
     const lineas = String(texto || "").replace(/\r/g, "").split("\n");
-    let html = "", parrafo = [], lista = [];
+    let html = "", parrafo = [], lista = [], tipo = "ul";
     const cerrarP = () => { if (parrafo.length) { html += `<p>${enLinea(parrafo.join(" "))}</p>`; parrafo = []; } };
-    const cerrarL = () => { if (lista.length) { html += `<ul>${lista.map((l) => `<li>${enLinea(l)}</li>`).join("")}</ul>`; lista = []; } };
+    const cerrarL = () => { if (lista.length) { html += `<${tipo}>${lista.map((l) => `<li>${enLinea(l)}</li>`).join("")}</${tipo}>`; lista = []; } };
+    const enLista = (t, texto) => { cerrarP(); if (lista.length && tipo !== t) cerrarL(); tipo = t; lista.push(texto); };
     for (const bruta of lineas) {
       const l = bruta.trim();
       if (!l) { cerrarP(); cerrarL(); continue; }
       if (l.startsWith("## ")) { cerrarP(); cerrarL(); html += `<h4>${enLinea(l.slice(3))}</h4>`; continue; }
-      if (/^[-*•] /.test(l)) { cerrarP(); lista.push(l.slice(2)); continue; }
+      if (/^[-*•] /.test(l)) { enLista("ul", l.slice(2)); continue; }
+      if (/^\d+[.)] /.test(l)) { enLista("ol", l.replace(/^\d+[.)] /, "")); continue; }
       if (l.startsWith("> ")) { cerrarP(); cerrarL(); html += `<blockquote>${enLinea(l.slice(2))}</blockquote>`; continue; }
       cerrarL(); parrafo.push(l);
     }
@@ -110,13 +112,22 @@
     $("filtros").innerHTML = ["Todos", ...cats]
       .map((c) => `<button type="button" role="tab" data-c="${esc(c)}" aria-selected="${c === filtro}">${esc(c)}</button>`).join("");
   };
+  // En "Todos" se ve el tema más reciente de cada categoría; el resto se despliega con un botón
+  const deCategoria = (c) => temas.filter((x) => (x.categoria || "") === (c || ""));
   const pintarTemas = () => {
-    const lista = temas.filter((t) => filtro === "Todos" || t.categoria === filtro);
+    const lista = filtro === "Todos"
+      ? temas.filter((t) => deCategoria(t.categoria)[0] === t)
+      : temas.filter((t) => t.categoria === filtro);
     $("rejilla").innerHTML = lista.length ? lista.map((t, i) => {
       const nF = (t.fotos || []).length, nV = (t.videos || []).length + (t.youtubeId ? 1 : 0);
-      const extras = [nV && `${nV} vídeo${nV > 1 ? "s" : ""}`, nF && `${nF} ${nF > 1 ? "imágenes" : "imagen"}`].filter(Boolean).join(" · ");
+      const extras = [nV && `${nV} vídeo${nV > 1 ? "s" : ""}`, !t.youtubeId && t.videoProximamente && "Vídeo próximamente", nF && `${nF} ${nF > 1 ? "imágenes" : "imagen"}`].filter(Boolean).join(" · ");
+      const dest = i === 0 && filtro === "Todos" && lista.length > 2 ? " destacada" : "";
+      const total = deCategoria(t.categoria).length;
+      const serie = filtro === "Todos" && t.categoria && total > 1
+        ? `<button type="button" class="mas-serie" data-c="${esc(t.categoria)}">Ver los ${total} temas de ${esc(t.categoria)} <span aria-hidden="true">↓</span></button>` : "";
       return `
-        <button class="tarjeta${i === 0 && filtro === "Todos" && lista.length > 2 ? " destacada" : ""}" data-id="${t.id}">
+       <div class="item${dest}">
+        <button class="tarjeta${dest}" data-id="${t.id}">
           ${portada(t)}
           <div class="info">
             ${meta(t)}
@@ -125,7 +136,9 @@
             ${extras ? `<span class="extras">${extras}</span>` : ""}
             ${t.texto ? `<span class="leer-mas">Leer más <span aria-hidden="true">→</span></span>` : ""}
           </div>
-        </button>`;
+        </button>
+        ${serie}
+       </div>`;
     }).join("") : `<p class="vacio">No hay temas en esta categoría.</p>`;
   };
   $("filtros").addEventListener("click", (e) => {
@@ -134,6 +147,8 @@
     filtro = b.dataset.c; pintarFiltros(); pintarTemas();
   });
   $("rejilla").addEventListener("click", (e) => {
+    const m = e.target.closest(".mas-serie");
+    if (m) { filtro = m.dataset.c; pintarFiltros(); pintarTemas(); $("temas").scrollIntoView({ behavior: "smooth" }); return; }
     const b = e.target.closest(".tarjeta");
     if (b) location.hash = "tema-" + b.dataset.id;
   });
@@ -147,6 +162,9 @@
     else if (t.portada) media = `<div class="m-media"><img src="${esc(t.portada)}" alt=""></div>`;
 
     const parrafos = formatear(t.texto);
+    const canal = ((S.enlaces || []).find((e) => e.tipo === "youtube") || {}).url;
+    const aviso = !t.youtubeId && t.videoProximamente
+      ? `<div class="aviso-video"><span class="aviso-etq">Vídeo</span><p>${esc(typeof t.videoProximamente === "string" ? t.videoProximamente : "Estoy preparando un vídeo sobre este tema. Aparecerá aquí en cuanto se publique.")}</p>${canal ? `<a href="${esc(canal)}" target="_blank" rel="noopener">Ir al canal de YouTube</a>` : ""}</div>` : "";
     const fotos = (t.fotos || []).length
       ? `<h3>Imágenes</h3><div class="galeria">${t.fotos.map((f) => `<a href="${esc(f)}" target="_blank" rel="noopener"><img src="${esc(f)}" alt="" loading="lazy"></a>`).join("")}</div>` : "";
     const vids = (t.videos || []).length
@@ -159,7 +177,7 @@
         <div class="meta">${t.categoria ? `<span class="cat">${esc(t.categoria)}</span>` : ""}<span>${esc(fmtFecha(t.fecha))}</span>${t.texto ? `<span>${minutos(t.texto)} min de lectura</span>` : ""}</div>
         <h2>${esc(t.titulo)}</h2>
         ${t.subtitulo || t.resumen ? `<p class="entradilla">${esc(t.subtitulo || t.resumen)}</p>` : ""}
-        ${media}
+        ${media}${aviso}
         <div class="cuerpo-texto">${parrafos}</div>
         ${fotos}${vids}${links}
       </article>`;
