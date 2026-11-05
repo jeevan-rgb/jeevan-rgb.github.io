@@ -219,7 +219,7 @@ Y hoy, que hablamos a diario con máquinas que escriben como nosotros, esa pregu
 
 Si te ha picado la curiosidad: Peter Watts publicó Visión ciega con una licencia Creative Commons, así que puedes leer la novela original en inglés de forma gratuita y legal en su web.
 `,
-      portada: "",                          // pendiente: img/... cuando subas la imagen
+      portada: "img/portada%20video%201.png",
       youtubeId: "",                        // cuando publiques el vídeo, pon aquí su ID
       videoProximamente: true,              // muestra el aviso "vídeo en preparación" hasta que haya youtubeId
       fotos: [],
