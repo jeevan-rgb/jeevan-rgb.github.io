@@ -24,6 +24,26 @@
     const d = new Date(f + "T12:00:00");
     return isNaN(d) ? f : d.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
   };
+  // Texto largo: línea en blanco = párrafo, "## " = subtítulo, "- " o "* " = lista, "> " = cita, **negrita**
+  const enLinea = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  const formatear = (texto) => {
+    const lineas = String(texto || "").replace(/\r/g, "").split("\n");
+    let html = "", parrafo = [], lista = [];
+    const cerrarP = () => { if (parrafo.length) { html += `<p>${enLinea(parrafo.join(" "))}</p>`; parrafo = []; } };
+    const cerrarL = () => { if (lista.length) { html += `<ul>${lista.map((l) => `<li>${enLinea(l)}</li>`).join("")}</ul>`; lista = []; } };
+    for (const bruta of lineas) {
+      const l = bruta.trim();
+      if (!l) { cerrarP(); cerrarL(); continue; }
+      if (l.startsWith("## ")) { cerrarP(); cerrarL(); html += `<h4>${enLinea(l.slice(3))}</h4>`; continue; }
+      if (/^[-*•] /.test(l)) { cerrarP(); lista.push(l.slice(2)); continue; }
+      if (l.startsWith("> ")) { cerrarP(); cerrarL(); html += `<blockquote>${enLinea(l.slice(2))}</blockquote>`; continue; }
+      cerrarL(); parrafo.push(l);
+    }
+    cerrarP(); cerrarL();
+    return html;
+  };
+  const minutos = (t) => Math.max(1, Math.round(String(t || "").split(/\s+/).filter(Boolean).length / 200));
+
   const ytThumb = (id) => `https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`;
   const ytBoton = (id, titulo) =>
     `<button class="yt" data-yt="${esc(id)}" aria-label="Reproducir vídeo: ${esc(titulo)}"><img src="${ytThumb(id)}" alt="" loading="lazy"><span class="play">Reproducir</span></button>`;
@@ -103,6 +123,7 @@
             <h3>${esc(t.titulo)}</h3>
             <p>${esc(t.resumen)}</p>
             ${extras ? `<span class="extras">${extras}</span>` : ""}
+            ${t.texto ? `<span class="leer-mas">Leer más <span aria-hidden="true">→</span></span>` : ""}
           </div>
         </button>`;
     }).join("") : `<p class="vacio">No hay temas en esta categoría.</p>`;
@@ -125,7 +146,7 @@
     if (t.youtubeId) media = `<div class="m-media">${ytBoton(t.youtubeId, t.titulo)}</div>`;
     else if (t.portada) media = `<div class="m-media"><img src="${esc(t.portada)}" alt=""></div>`;
 
-    const parrafos = String(t.texto || "").split(/\n\s*\n/).filter((p) => p.trim()).map((p) => `<p>${esc(p.trim())}</p>`).join("");
+    const parrafos = formatear(t.texto);
     const fotos = (t.fotos || []).length
       ? `<h3>Imágenes</h3><div class="galeria">${t.fotos.map((f) => `<a href="${esc(f)}" target="_blank" rel="noopener"><img src="${esc(f)}" alt="" loading="lazy"></a>`).join("")}</div>` : "";
     const vids = (t.videos || []).length
@@ -134,16 +155,17 @@
       ? `<h3>Referencias y enlaces</h3><ul class="m-enlaces">${t.enlaces.map((l) => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.texto || l.url)}</a></li>`).join("")}</ul>` : "";
 
     $("modalCont").innerHTML = `
-      <article class="articulo">
-        ${meta(t)}
+      <article class="articulo" tabindex="-1">
+        <div class="meta">${t.categoria ? `<span class="cat">${esc(t.categoria)}</span>` : ""}<span>${esc(fmtFecha(t.fecha))}</span>${t.texto ? `<span>${minutos(t.texto)} min de lectura</span>` : ""}</div>
         <h2>${esc(t.titulo)}</h2>
-        ${t.resumen ? `<p class="entradilla">${esc(t.resumen)}</p>` : ""}
+        ${t.subtitulo || t.resumen ? `<p class="entradilla">${esc(t.subtitulo || t.resumen)}</p>` : ""}
         ${media}
         <div class="cuerpo-texto">${parrafos}</div>
         ${fotos}${vids}${links}
       </article>`;
     document.title = `${t.titulo} · ${S.nombreWeb || ""}`;
     if (!modal.open) modal.showModal();
+    modal.querySelector(".articulo").focus({ preventScroll: true });
     modal.scrollTop = 0;
   };
   const cerrar = () => { if (modal.open) modal.close(); };
