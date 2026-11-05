@@ -1,8 +1,73 @@
 (function () {
+  // ---------- Idioma (ES / EN) ----------
+  let idioma = "es";
+  try { idioma = new URLSearchParams(location.search).get("lang") || localStorage.getItem("idioma") || "es"; } catch (e) {}
+  if (idioma !== "en") idioma = "es";
+  const EN = idioma === "en";
+  const LOCALE = EN ? "en-GB" : "es-ES";
+  const TXT = {
+    es: {
+      temas: "Temas", preguntaDia: "Pregunta del día", sobreMi: "Sobre mí", otraPregunta: "Ver otra pregunta", cerrar: "Cerrar",
+      todos: "Todos", leerMas: "Leer más", minLectura: "min de lectura", videoProx: "Vídeo próximamente",
+      verTemas: (n, c) => `Ver los ${n} temas de ${c}`, vacio: "No hay temas en esta categoría.",
+      video: "Vídeo", videos: (n) => `${n} vídeo${n > 1 ? "s" : ""}`, imagenes: (n) => `${n} ${n > 1 ? "imágenes" : "imagen"}`,
+      reproducir: "Reproducir", reproducirVideo: "Reproducir vídeo", preguntaExtra: "Pregunta adicional",
+      mostrarResp: "Mostrar respuesta", respuesta: "Respuesta", correcto: "Correcto.", incorrecto: "No es correcto.",
+      correcta: "Correcta", tuResp: "Tu respuesta", verFuente: "Ver fuente",
+      avisoVideo: "Estoy preparando un vídeo sobre este tema. Aparecerá aquí en cuanto se publique.", irCanal: "Ir al canal de YouTube",
+      imgs: "Imágenes", vidsRel: "Vídeos relacionados", refs: "Referencias y enlaces", correo: "Correo",
+      aModoOscuro: "Cambiar a modo oscuro", aModoClaro: "Cambiar a modo claro", tituloVideo: "Vídeo de YouTube",
+      error: "<strong>No se ha podido leer el contenido (data.js).</strong><br>Revisa el último cambio: suele ser una coma o unas comillas que faltan, o un carácter suelto escrito sin querer.",
+    },
+    en: {
+      temas: "Topics", preguntaDia: "Question of the day", sobreMi: "About me", otraPregunta: "Show another question", cerrar: "Close",
+      todos: "All", leerMas: "Read more", minLectura: "min read", videoProx: "Video coming soon",
+      verTemas: (n, c) => `See all ${n} topics in ${c}`, vacio: "There are no topics in this category.",
+      video: "Video", videos: (n) => `${n} video${n > 1 ? "s" : ""}`, imagenes: (n) => `${n} image${n > 1 ? "s" : ""}`,
+      reproducir: "Play", reproducirVideo: "Play video", preguntaExtra: "Bonus question",
+      mostrarResp: "Show answer", respuesta: "Answer", correcto: "Correct.", incorrecto: "Not quite.",
+      correcta: "Correct", tuResp: "Your answer", verFuente: "View source",
+      avisoVideo: "I'm preparing a video on this topic. It will appear here as soon as it's published.", irCanal: "Go to the YouTube channel",
+      imgs: "Images", vidsRel: "Related videos", refs: "References and links", correo: "Email",
+      aModoOscuro: "Switch to dark mode", aModoClaro: "Switch to light mode", tituloVideo: "YouTube video",
+      error: "<strong>The content (data.js) could not be loaded.</strong><br>Check the last change: usually a missing comma or quotation mark, or a stray character.",
+    },
+  }[idioma];
+  // Devuelve la versión inglesa de un campo (campo_en) si existe y estamos en inglés
+  const tx = (o, k) => (o ? (EN && o[k + "_en"] != null && o[k + "_en"] !== "" ? o[k + "_en"] : o[k]) : "");
+
+  document.documentElement.lang = idioma;
+  document.querySelectorAll("[data-i18n]").forEach((el) => { if (typeof TXT[el.dataset.i18n] === "string") el.textContent = TXT[el.dataset.i18n]; });
+
+  const btnIdioma = document.getElementById("btnIdioma");
+  btnIdioma.textContent = EN ? "ES" : "EN";
+  btnIdioma.lang = EN ? "es" : "en";
+  btnIdioma.title = EN ? "Leer en español" : "Read in English";
+  btnIdioma.onclick = () => {
+    try { localStorage.setItem("idioma", EN ? "es" : "en"); } catch (e) {}
+    const u = new URL(location.href);
+    u.searchParams.delete("lang");
+    if (!EN) u.searchParams.set("lang", "en");
+    location.replace(u.toString());
+  };
+
+  // ---------- Modo claro / oscuro ----------
+  const raiz = document.documentElement;
+  const btnTema = document.getElementById("btnTema");
+  const ponerEtiquetaTema = () => btnTema.setAttribute("aria-label", raiz.dataset.tema === "oscuro" ? TXT.aModoClaro : TXT.aModoOscuro);
+  if (!raiz.dataset.tema) raiz.dataset.tema = matchMedia("(prefers-color-scheme: dark)").matches ? "oscuro" : "claro";
+  ponerEtiquetaTema();
+  btnTema.title = btnTema.getAttribute("aria-label");
+  btnTema.onclick = () => {
+    raiz.dataset.tema = raiz.dataset.tema === "oscuro" ? "claro" : "oscuro";
+    try { localStorage.setItem("tema", raiz.dataset.tema); } catch (e) {}
+    ponerEtiquetaTema();
+    btnTema.title = btnTema.getAttribute("aria-label");
+  };
+
   if (!window.SITE) {
     document.querySelector("main").insertAdjacentHTML("afterbegin",
-      '<div style="margin:2rem 0;padding:1rem 1.25rem;border:1px solid #9b2c2c;border-left:4px solid #9b2c2c;background:#f8eeee;color:#5a1a1a;font-size:.95rem">' +
-      '<strong>No se ha podido leer el contenido (data.js).</strong><br>Revisa el último cambio: suele ser una coma o unas comillas que faltan, o un carácter suelto escrito sin querer.</div>');
+      '<div style="margin:2rem 0;padding:1rem 1.25rem;border:1px solid #9b2c2c;border-left:4px solid #9b2c2c;background:#f8eeee;color:#5a1a1a;font-size:.95rem">' + TXT.error + "</div>");
   }
   const S = window.SITE || {};
   const $ = (id) => document.getElementById(id);
@@ -10,26 +75,27 @@
   const slug = (t) => String(t).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   // Tonos sobrios para las portadas sin imagen (uno por categoría)
   const TONOS = ["#e4e0d6", "#dde3e8", "#e2e5dc", "#e8e0dc", "#e0dde6", "#e6e3d3", "#dae3e1"];
-  const REDES = { email: "Correo", youtube: "YouTube", instagram: "Instagram", x: "X", tiktok: "TikTok", github: "GitHub", web: "Web", linkedin: "LinkedIn", orcid: "ORCID", researchgate: "ResearchGate" };
+  const REDES = { email: TXT.correo, youtube: "YouTube", instagram: "Instagram", x: "X", tiktok: "TikTok", github: "GitHub", web: "Web", linkedin: "LinkedIn", orcid: "ORCID", researchgate: "ResearchGate" };
+  const nombreCat = (c) => (EN && S.categorias_en && S.categorias_en[c]) || c;
 
   // ---------- Básicos ----------
-  document.title = S.nombreWeb || document.title;
-  $("marca").textContent = S.nombreWeb || "";
-  $("etiqueta").textContent = S.etiqueta || "";
-  $("titulo").textContent = S.titular || S.nombreWeb || "";
-  $("intro").textContent = S.intro || "";
-  $("sobreMi").textContent = S.sobreMi || "";
+  document.title = S.nombreWeb_en && EN ? S.nombreWeb_en : S.nombreWeb || document.title;
+  $("marca").textContent = tx(S, "nombreWeb");
+  $("etiqueta").textContent = tx(S, "etiqueta");
+  $("titulo").textContent = tx(S, "titular") || tx(S, "nombreWeb");
+  $("intro").textContent = tx(S, "intro");
+  $("sobreMi").textContent = tx(S, "sobreMi");
   if (S.foto) { $("foto").src = S.foto; $("foto").alt = S.autor || ""; $("foto").hidden = false; }
   $("enlaces").innerHTML = (S.enlaces || []).filter((e) => e.url)
     .map((e) => `<li><a href="${esc(e.url)}" ${e.tipo === "email" ? "" : 'target="_blank" rel="noopener"'}>${esc(REDES[e.tipo] || e.tipo)}</a></li>`).join("");
-  $("pie").textContent = `© ${new Date().getFullYear()} ${S.autor || ""} · ${S.nombreWeb || ""}`;
+  $("pie").textContent = `© ${new Date().getFullYear()} ${S.autor || ""} · ${tx(S, "nombreWeb")}`;
 
   const fmtFecha = (f) => {
     if (!f) return "";
     const d = new Date(f + "T12:00:00");
-    return isNaN(d) ? f : d.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
+    return isNaN(d) ? f : d.toLocaleDateString(LOCALE, { day: "numeric", month: "long", year: "numeric" });
   };
-  // Texto largo: línea en blanco = párrafo, "## " = subtítulo, "- " o "* " = lista, "> " = cita, **negrita**
+  // Texto largo: línea en blanco = párrafo, "## " = subtítulo, "- " o "* " = lista, "1. " = lista numerada, "> " = cita, **negrita**
   const enLinea = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   const formatear = (texto) => {
     const lineas = String(texto || "").replace(/\r/g, "").split("\n");
@@ -53,7 +119,7 @@
 
   const ytThumb = (id) => `https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`;
   const ytBoton = (id, titulo) =>
-    `<button class="yt" data-yt="${esc(id)}" aria-label="Reproducir vídeo: ${esc(titulo)}"><img src="${ytThumb(id)}" alt="" loading="lazy"><span class="play">Reproducir</span></button>`;
+    `<button class="yt" data-yt="${esc(id)}" aria-label="${TXT.reproducirVideo}: ${esc(titulo)}"><img src="${ytThumb(id)}" alt="" loading="lazy"><span class="play">${TXT.reproducir}</span></button>`;
 
   // ---------- Pregunta del día ----------
   const preguntas = S.preguntas || [];
@@ -62,34 +128,34 @@
     const hoy = new Date();
     const indiceHoy = Math.floor(Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()) / 864e5) % preguntas.length;
     let actual = indiceHoy;
-    const fechaHoy = hoy.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
+    const fechaHoy = hoy.toLocaleDateString(LOCALE, { day: "numeric", month: "long", year: "numeric" });
 
     const mostrar = (i) => {
       const q = preguntas[i];
-      $("hoy").textContent = i === indiceHoy ? fechaHoy : "Pregunta adicional";
-      $("pTexto").textContent = q.pregunta;
+      $("hoy").textContent = i === indiceHoy ? fechaHoy : TXT.preguntaExtra;
+      $("pTexto").textContent = tx(q, "pregunta");
       $("pRespuesta").hidden = true;
-      const ops = q.opciones || [];
+      const ops = (EN && q.opciones_en && q.opciones_en.length ? q.opciones_en : q.opciones) || [];
       $("pOpciones").innerHTML = ops.length
         ? ops.map((o, k) => `<li><button type="button" data-k="${k}"><span>${esc(o)}</span><span class="marca-res"></span></button></li>`).join("")
-        : `<li><button type="button" class="ver" data-k="ver">Mostrar respuesta</button></li>`;
+        : `<li><button type="button" class="ver" data-k="ver">${TXT.mostrarResp}</button></li>`;
       $("pOpciones").onclick = (e) => {
         const b = e.target.closest("button");
         if (!b || b.disabled) return;
-        let titulo = "Respuesta";
+        let titulo = TXT.respuesta;
         if (b.dataset.k !== "ver") {
           const elegida = +b.dataset.k, ok = elegida === q.correcta;
-          titulo = ok ? "Correcto." : "No es correcto.";
+          titulo = ok ? TXT.correcto : TXT.incorrecto;
           $("pOpciones").querySelectorAll("button").forEach((x, k) => {
             x.disabled = true;
             const m = x.querySelector(".marca-res");
-            if (k === q.correcta) { x.classList.add("bien"); m.textContent = "Correcta"; }
-            else if (k === elegida) { x.classList.add("mal"); m.textContent = "Tu respuesta"; }
+            if (k === q.correcta) { x.classList.add("bien"); m.textContent = TXT.correcta; }
+            else if (k === elegida) { x.classList.add("mal"); m.textContent = TXT.tuResp; }
             else x.classList.add("atenuada");
           });
         } else b.closest("li").remove();
-        $("pRespuesta").innerHTML = `<strong>${titulo}</strong><p>${esc(q.explicacion)}</p>` +
-          (q.fuente ? `<p><a href="${esc(q.fuente)}" target="_blank" rel="noopener">Ver fuente</a></p>` : "");
+        $("pRespuesta").innerHTML = `<strong>${titulo}</strong><p>${esc(tx(q, "explicacion"))}</p>` +
+          (q.fuente ? `<p><a href="${esc(q.fuente)}" target="_blank" rel="noopener">${TXT.verFuente}</a></p>` : "");
         $("pRespuesta").hidden = false;
       };
     };
@@ -100,22 +166,22 @@
 
   // ---------- Temas ----------
   const temas = (S.temas || []).slice().sort((a, b) => String(b.fecha || "").localeCompare(String(a.fecha || "")));
-  temas.forEach((t) => (t.id = slug(t.titulo)));
+  temas.forEach((t) => (t.id = slug(t.titulo))); // el enlace de cada tema usa siempre el título en español
   const cats = [...new Set(temas.map((t) => t.categoria).filter(Boolean))];
   const tono = (c) => TONOS[Math.max(0, cats.indexOf(c)) % TONOS.length];
   let filtro = "Todos";
 
   const portada = (t) => {
-    if (t.portada) return `<div class="portada"><img src="${esc(t.portada)}" alt="" loading="lazy">${t.youtubeId ? '<span class="play">Vídeo</span>' : ""}</div>`;
-    if (t.youtubeId) return `<div class="portada"><img src="${ytThumb(t.youtubeId)}" alt="" loading="lazy"><span class="play">Vídeo</span></div>`;
-    return `<div class="portada vacia" style="--tono:${tono(t.categoria)}"><span>${esc(t.categoria || "")}</span></div>`;
+    if (t.portada) return `<div class="portada"><img src="${esc(t.portada)}" alt="" loading="lazy">${t.youtubeId ? `<span class="play">${TXT.video}</span>` : ""}</div>`;
+    if (t.youtubeId) return `<div class="portada"><img src="${ytThumb(t.youtubeId)}" alt="" loading="lazy"><span class="play">${TXT.video}</span></div>`;
+    return `<div class="portada vacia" style="--tono:${tono(t.categoria)}"><span>${esc(nombreCat(t.categoria || ""))}</span></div>`;
   };
-  const meta = (t) => `<div class="meta">${t.categoria ? `<span class="cat">${esc(t.categoria)}</span>` : ""}<span>${esc(fmtFecha(t.fecha))}</span></div>`;
+  const meta = (t, extra) => `<div class="meta">${t.categoria ? `<span class="cat">${esc(nombreCat(t.categoria))}</span>` : ""}<span>${esc(fmtFecha(t.fecha))}</span>${extra || ""}</div>`;
 
   const pintarFiltros = () => {
     if (cats.length < 2) { $("filtros").innerHTML = ""; return; }
     $("filtros").innerHTML = ["Todos", ...cats]
-      .map((c) => `<button type="button" role="tab" data-c="${esc(c)}" aria-selected="${c === filtro}">${esc(c)}</button>`).join("");
+      .map((c) => `<button type="button" role="tab" data-c="${esc(c)}" aria-selected="${c === filtro}">${esc(c === "Todos" ? TXT.todos : nombreCat(c))}</button>`).join("");
   };
   // En "Todos" se ve el tema más reciente de cada categoría; el resto se despliega con un botón
   const deCategoria = (c) => temas.filter((x) => (x.categoria || "") === (c || ""));
@@ -125,26 +191,26 @@
       : temas.filter((t) => t.categoria === filtro);
     $("rejilla").innerHTML = lista.length ? lista.map((t, i) => {
       const nF = (t.fotos || []).length, nV = (t.videos || []).length + (t.youtubeId ? 1 : 0);
-      const extras = [nV && `${nV} vídeo${nV > 1 ? "s" : ""}`, !t.youtubeId && t.videoProximamente && "Vídeo próximamente", nF && `${nF} ${nF > 1 ? "imágenes" : "imagen"}`].filter(Boolean).join(" · ");
+      const extras = [nV && TXT.videos(nV), !t.youtubeId && t.videoProximamente && TXT.videoProx, nF && TXT.imagenes(nF)].filter(Boolean).join(" · ");
       const dest = i === 0 && filtro === "Todos" && lista.length > 2 ? " destacada" : "";
       const total = deCategoria(t.categoria).length;
       const serie = filtro === "Todos" && t.categoria && total > 1
-        ? `<button type="button" class="mas-serie" data-c="${esc(t.categoria)}">Ver los ${total} temas de ${esc(t.categoria)} <span aria-hidden="true">↓</span></button>` : "";
+        ? `<button type="button" class="mas-serie" data-c="${esc(t.categoria)}">${esc(TXT.verTemas(total, nombreCat(t.categoria)))} <span aria-hidden="true">↓</span></button>` : "";
       return `
        <div class="item${dest}">
         <button class="tarjeta${dest}" data-id="${t.id}">
           ${portada(t)}
           <div class="info">
             ${meta(t)}
-            <h3>${esc(t.titulo)}</h3>
-            <p>${esc(t.resumen)}</p>
+            <h3>${esc(tx(t, "titulo"))}</h3>
+            <p>${esc(tx(t, "resumen"))}</p>
             ${extras ? `<span class="extras">${extras}</span>` : ""}
-            ${t.texto ? `<span class="leer-mas">Leer más <span aria-hidden="true">→</span></span>` : ""}
+            ${t.texto ? `<span class="leer-mas">${TXT.leerMas} <span aria-hidden="true">→</span></span>` : ""}
           </div>
         </button>
         ${serie}
        </div>`;
-    }).join("") : `<p class="vacio">No hay temas en esta categoría.</p>`;
+    }).join("") : `<p class="vacio">${TXT.vacio}</p>`;
   };
   $("filtros").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-c]");
@@ -162,39 +228,44 @@
   // ---------- Vista de un tema (enlace propio: #tema-titulo) ----------
   const modal = $("modal");
   const abrir = (t) => {
+    const titulo = tx(t, "titulo");
     let media = "";
-    if (t.youtubeId) media = `<div class="m-media">${ytBoton(t.youtubeId, t.titulo)}</div>`;
+    if (t.youtubeId) media = `<div class="m-media">${ytBoton(t.youtubeId, titulo)}</div>`;
     else if (t.portada) media = `<div class="m-media"><img src="${esc(t.portada)}" alt=""></div>`;
-    if (media && !t.youtubeId && t.portadaCredito) media += `<p class="credito">${t.portadaCreditoUrl ? `<a href="${esc(t.portadaCreditoUrl)}" target="_blank" rel="noopener">${esc(t.portadaCredito)}</a>` : esc(t.portadaCredito)}</p>`;
+    const credito = tx(t, "portadaCredito");
+    if (media && !t.youtubeId && credito) media += `<p class="credito">${t.portadaCreditoUrl ? `<a href="${esc(t.portadaCreditoUrl)}" target="_blank" rel="noopener">${esc(credito)}</a>` : esc(credito)}</p>`;
 
-    const parrafos = formatear(t.texto);
+    const texto = tx(t, "texto");
+    const parrafos = formatear(texto);
     const canal = ((S.enlaces || []).find((e) => e.tipo === "youtube") || {}).url;
+    const avisoTxt = typeof t.videoProximamente === "string" ? tx(t, "videoProximamente") : TXT.avisoVideo;
     const aviso = !t.youtubeId && t.videoProximamente
-      ? `<div class="aviso-video"><span class="aviso-etq">Vídeo</span><p>${esc(typeof t.videoProximamente === "string" ? t.videoProximamente : "Estoy preparando un vídeo sobre este tema. Aparecerá aquí en cuanto se publique.")}</p>${canal ? `<a href="${esc(canal)}" target="_blank" rel="noopener">Ir al canal de YouTube</a>` : ""}</div>` : "";
+      ? `<div class="aviso-video"><span class="aviso-etq">${TXT.video}</span><p>${esc(avisoTxt)}</p>${canal ? `<a href="${esc(canal)}" target="_blank" rel="noopener">${TXT.irCanal}</a>` : ""}</div>` : "";
     const fotos = (t.fotos || []).length
-      ? `<h3>Imágenes</h3><div class="galeria">${t.fotos.map((f) => `<a href="${esc(f)}" target="_blank" rel="noopener"><img src="${esc(f)}" alt="" loading="lazy"></a>`).join("")}</div>` : "";
+      ? `<h3>${TXT.imgs}</h3><div class="galeria">${t.fotos.map((f) => `<a href="${esc(f)}" target="_blank" rel="noopener"><img src="${esc(f)}" alt="" loading="lazy"></a>`).join("")}</div>` : "";
     const vids = (t.videos || []).length
-      ? `<h3>Vídeos relacionados</h3><div class="mini-videos">${t.videos.map((id) => `<div class="m-media">${ytBoton(id, t.titulo)}</div>`).join("")}</div>` : "";
+      ? `<h3>${TXT.vidsRel}</h3><div class="mini-videos">${t.videos.map((id) => `<div class="m-media">${ytBoton(id, titulo)}</div>`).join("")}</div>` : "";
     const links = (t.enlaces || []).length
-      ? `<h3>Referencias y enlaces</h3><ul class="m-enlaces">${t.enlaces.map((l) => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.texto || l.url)}</a></li>`).join("")}</ul>` : "";
+      ? `<h3>${TXT.refs}</h3><ul class="m-enlaces">${t.enlaces.map((l) => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(tx(l, "texto") || l.url)}</a></li>`).join("")}</ul>` : "";
+    const entradilla = tx(t, "subtitulo") || tx(t, "resumen");
 
     $("modalCont").innerHTML = `
       <article class="articulo" tabindex="-1">
-        <div class="meta">${t.categoria ? `<span class="cat">${esc(t.categoria)}</span>` : ""}<span>${esc(fmtFecha(t.fecha))}</span>${t.texto ? `<span>${minutos(t.texto)} min de lectura</span>` : ""}</div>
-        <h2>${esc(t.titulo)}</h2>
-        ${t.subtitulo || t.resumen ? `<p class="entradilla">${esc(t.subtitulo || t.resumen)}</p>` : ""}
+        ${meta(t, texto ? `<span>${minutos(texto)} ${TXT.minLectura}</span>` : "")}
+        <h2>${esc(titulo)}</h2>
+        ${entradilla ? `<p class="entradilla">${esc(entradilla)}</p>` : ""}
         ${media}${aviso}
         <div class="cuerpo-texto">${parrafos}</div>
         ${fotos}${vids}${links}
       </article>`;
-    document.title = `${t.titulo} · ${S.nombreWeb || ""}`;
+    document.title = `${titulo} · ${tx(S, "nombreWeb")}`;
     if (!modal.open) modal.showModal();
     modal.querySelector(".articulo").focus({ preventScroll: true });
     modal.scrollTop = 0;
   };
   const cerrar = () => { if (modal.open) modal.close(); };
   modal.addEventListener("close", () => {
-    document.title = S.nombreWeb || "";
+    document.title = tx(S, "nombreWeb");
     $("modalCont").innerHTML = "";
     if (location.hash.startsWith("#tema-")) history.replaceState(null, "", location.pathname + location.search + "#temas");
   });
@@ -202,7 +273,7 @@
   modal.addEventListener("click", (e) => {
     if (e.target === modal) cerrar();
     const yt = e.target.closest(".yt");
-    if (yt) yt.outerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(yt.dataset.yt)}?autoplay=1&rel=0" title="Vídeo de YouTube" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+    if (yt) yt.outerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(yt.dataset.yt)}?autoplay=1&rel=0" title="${TXT.tituloVideo}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
   });
   const deHash = () => {
     const m = location.hash.match(/^#tema-(.+)$/);
