@@ -40,7 +40,16 @@ window.SITE = {
       fecha: "2026-11-05",                 // año-mes-día (se ordenan solos)
       categoria: "Cerebro",                // crea las que quieras, el color se pone solo
       resumen: "Una o dos frases que salen en la tarjeta.",
-      texto: "Párrafo 1.\n\nPárrafo 2.",   // \n\n separa párrafos
+      subtitulo: "",                       // opcional: frase que sale bajo el título al abrir el tema
+      texto: `
+Primer párrafo. Deja una línea en blanco entre párrafos.
+
+## Un subtítulo
+Texto del apartado. Con **dos asteriscos** pones negrita.
+
+- Un punto de una lista
+- Otro punto
+`,                                         // el texto completo va entre comillas invertidas ` `
       portada: "",                         // foto de portada: "img/mi-foto.jpg"
       youtubeId: "",                       // vídeo principal: lo que va tras "v=" en YouTube
       fotos: [],                           // más fotos: ["img/a.jpg", "img/b.jpg"]
@@ -53,12 +62,34 @@ window.SITE = {
       titulo: "¿Por qué duele lo que duele?",
       fecha: "2026-11-02",
       categoria: "Dolor",
-      resumen: "El dolor no es un cable que va del dedo al cerebro. Es algo mucho más interesante.",
-      texto:
-        "Durante mucho tiempo se pensó que el dolor era una señal directa: te golpeas y el mensaje viaja hasta el cerebro. " +
-        "Hoy sabemos que el cerebro no se limita a recibir esa señal, sino que la interpreta según el contexto, la memoria, la atención o el miedo.\n\n" +
-        "Por eso dos personas con la misma lesión pueden sentir cosas muy distintas, y por eso el dolor puede seguir ahí cuando el tejido ya se ha curado.",
-      portada: "",
+      resumen: "Un clavo que no toca la carne y duele. Una mano que no existe y duele. El dolor no está donde te duele.",
+      subtitulo: "El dolor no está donde te duele",
+      texto: `
+En 1995, una revista médica británica publicó un caso. Un albañil de 29 años saltó desde un andamio y cayó sobre un clavo de 15 centímetros, que le atravesó la bota de lado a lado. Llegó a urgencias gritando de dolor, tan intenso que tuvieron que sedarlo con opioides antes de poder quitarle la bota. Cuando por fin lo hicieron, el clavo había pasado limpiamente entre dos dedos. No tenía ni un rasguño.
+
+¿Fingía? No. Le dolía de verdad. Y entender por qué es entender qué es el dolor.
+
+## Qué es el dolor
+Solemos pensar que el dolor es un mensaje que viaja desde la herida hasta el cerebro, como un cable que avisa “aquí hay daño”. No funciona así. En la piel, los músculos y los órganos tenemos nociceptores, sensores que detectan peligro: calor extremo, presión intensa, sustancias químicas de la inflamación. Envían señales por los nervios y la médula espinal hasta el cerebro. Pero esas señales todavía no son dolor; son información.
+
+El cerebro recibe esa información y la mezcla con todo lo demás: lo que ves, lo que recuerdas, lo que temes y el contexto en el que estás. Con todo eso decide si estás en peligro. Si concluye que sí, produce dolor. Por eso la Asociación Internacional para el Estudio del Dolor lo define como una experiencia sensorial y emocional, no como un medidor de daño. El albañil vio un clavo saliendo de su bota, y su cerebro sacó la conclusión más lógica.
+
+## Por qué duele
+Porque el dolor nos protege. Hay personas que nacen con una mutación que les impide sentirlo. Parece un superpoder, pero es una condena: se rompen huesos sin enterarse, se muerden la lengua o se queman, y suelen vivir menos. El dolor es la alarma que nos obliga a parar, apartar la mano y cuidar la zona herida.
+
+## Por qué no todo duele igual
+- **Por el cable que transporta la señal.** Cuando te golpeas el dedo pequeño del pie, notas primero un pinchazo agudo y luego una ola sorda y palpitante. Son dos tipos de fibras nerviosas: unas rápidas, recubiertas de mielina, que traen el “¡ay!” preciso, y otras lentas, sin ese aislante, que traen el dolor difuso que se queda.
+- **Por el lugar de origen.** El dolor de la piel se localiza con precisión. El de las vísceras es vago y a veces aparece en otro sitio: un infarto puede doler en el brazo izquierdo, porque las señales del corazón y del brazo comparten neuronas en la médula y el cerebro se confunde de remitente.
+- **Por si el cableado está dañado.** Cuando el problema está en el propio nervio, el dolor quema, da calambres o descargas eléctricas. Es el dolor neuropático: la alarma suena porque el sistema falla, no porque haya amenaza.
+- **Por el contexto.** En la Segunda Guerra Mundial, el médico Henry Beecher observó que muchos soldados con heridas graves pedían menos analgesia que civiles con lesiones parecidas. Para el soldado, la herida significaba salir vivo del frente. También por eso frotarte el golpe alivia: el tacto compite con la señal de peligro en la médula y “cierra la puerta” a parte de ella.
+- **Por el tiempo.** En el dolor crónico, la alarma se vuelve hipersensible. El sistema nervioso aprende a doler y sigue disparándose aunque los tejidos ya hayan curado.
+
+## Píldora final
+Hay personas a las que les duele una mano que ya no tienen. Es el dolor del miembro fantasma: el brazo fue amputado, pero el mapa del cuerpo en el cerebro sigue ahí, y a veces produce dolor en él. Lo más asombroso es que en algunos casos se alivia con un simple espejo. Al ver el reflejo de la mano sana moviéndose donde estaba la otra, el cerebro “cree” que la mano perdida se relaja, y el dolor disminuye.
+
+> Un clavo que no toca la carne y duele. Una mano que no existe y duele. El dolor no está en el pie ni en la mano: está en la conclusión que saca el cerebro.
+`,
+      portada: "img/neuronas-dolor.jpg",
       youtubeId: "",
       fotos: [],
       videos: [],
