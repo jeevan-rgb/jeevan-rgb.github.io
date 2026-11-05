@@ -9,15 +9,32 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script>
+    // Tema e idioma guardados, aplicados antes de pintar la página
+    try {
+      var t = localStorage.getItem("tema");
+      if (t !== "claro" && t !== "oscuro") t = matchMedia("(prefers-color-scheme: dark)").matches ? "oscuro" : "claro";
+      document.documentElement.dataset.tema = t;
+      var l = new URLSearchParams(location.search).get("lang") || localStorage.getItem("idioma");
+      if (l === "en") document.documentElement.lang = "en";
+    } catch (e) {}
+  </script>
 </head>
 <body>
   <header class="barra">
     <div class="barra-in">
       <a class="marca" href="#" id="marca"></a>
       <nav>
-        <a href="#temas">Temas</a>
-        <a href="#pregunta">Pregunta del día</a>
-        <a href="#sobre">Sobre mí</a>
+        <a href="#temas" data-i18n="temas">Temas</a>
+        <a href="#pregunta" data-i18n="preguntaDia">Pregunta del día</a>
+        <a href="#sobre" data-i18n="sobreMi">Sobre mí</a>
+        <span class="controles">
+          <button type="button" class="ctrl" id="btnIdioma" lang="en" title="Read in English">EN</button>
+          <button type="button" class="ctrl" id="btnTema" aria-label="Cambiar a modo oscuro">
+            <svg class="ico-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+            <svg class="ico-sol" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+          </button>
+        </span>
       </nav>
     </div>
   </header>
@@ -32,26 +49,26 @@
 
       <aside id="pregunta" class="pregunta" aria-labelledby="pTexto">
         <div class="pregunta-cab">
-          <span>Pregunta del día</span>
+          <span data-i18n="preguntaDia">Pregunta del día</span>
           <span id="hoy"></span>
         </div>
         <h2 id="pTexto"></h2>
         <ol class="opciones" id="pOpciones"></ol>
         <div class="respuesta" id="pRespuesta" hidden></div>
-        <button class="otra" id="pOtra" type="button">Ver otra pregunta</button>
+        <button class="otra" id="pOtra" type="button" data-i18n="otraPregunta">Ver otra pregunta</button>
       </aside>
     </section>
 
     <section id="temas" class="temas">
       <div class="seccion-cab">
-        <h2>Temas</h2>
+        <h2 data-i18n="temas">Temas</h2>
         <div class="filtros" id="filtros" role="tablist"></div>
       </div>
       <div class="rejilla" id="rejilla"></div>
     </section>
 
     <section id="sobre" class="sobre">
-      <h2>Sobre mí</h2>
+      <h2 data-i18n="sobreMi">Sobre mí</h2>
       <div class="sobre-cuerpo">
         <img id="foto" alt="" hidden>
         <div>
@@ -65,7 +82,7 @@
   <footer><div id="pie"></div></footer>
 
   <dialog id="modal">
-    <button class="cerrar" id="cerrar" aria-label="Cerrar">Cerrar ✕</button>
+    <button class="cerrar" id="cerrar"><span data-i18n="cerrar">Cerrar</span> ✕</button>
     <div id="modalCont"></div>
   </dialog>
 
