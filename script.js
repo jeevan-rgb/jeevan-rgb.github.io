@@ -10,6 +10,7 @@
       temas: "Temas", preguntaDia: "Pregunta del día", sobreMi: "Sobre mí", otraPregunta: "Ver otra pregunta", cerrar: "Cerrar",
       todos: "Todos", leerMas: "Leer más", minLectura: "min de lectura", videoProx: "Vídeo próximamente",
       verTemas: (n, c) => `Ver los ${n} temas de ${c}`, vacio: "No hay temas en esta categoría.",
+      proximamente: "Próximamente", enPreparacion: "Estoy preparando este tema. Vuelve pronto para leerlo.",
       video: "Vídeo", videos: (n) => `${n} vídeo${n > 1 ? "s" : ""}`, imagenes: (n) => `${n} ${n > 1 ? "imágenes" : "imagen"}`,
       reproducir: "Reproducir", reproducirVideo: "Reproducir vídeo", preguntaExtra: "Pregunta adicional",
       mostrarResp: "Mostrar respuesta", respuesta: "Respuesta", correcto: "Correcto.", incorrecto: "No es correcto.",
@@ -23,6 +24,7 @@
       temas: "Topics", preguntaDia: "Question of the day", sobreMi: "About me", otraPregunta: "Show another question", cerrar: "Close",
       todos: "All", leerMas: "Read more", minLectura: "min read", videoProx: "Video coming soon",
       verTemas: (n, c) => `See all ${n} topics in ${c}`, vacio: "There are no topics in this category.",
+      proximamente: "Coming soon", enPreparacion: "I'm working on this topic. Check back soon to read it.",
       video: "Video", videos: (n) => `${n} video${n > 1 ? "s" : ""}`, imagenes: (n) => `${n} image${n > 1 ? "s" : ""}`,
       reproducir: "Play", reproducirVideo: "Play video", preguntaExtra: "Bonus question",
       mostrarResp: "Show answer", respuesta: "Answer", correcto: "Correct.", incorrecto: "Not quite.",
@@ -171,7 +173,9 @@
   const tono = (c) => TONOS[Math.max(0, cats.indexOf(c)) % TONOS.length];
   let filtro = "Todos";
 
+  const imgProx = S.imagenProximamente || "";
   const portada = (t) => {
+    if (t.proximamente && imgProx) return `<div class="portada prox"><img src="${esc(imgProx)}" alt="${TXT.proximamente}" loading="lazy" onerror="this.remove()"></div>`;
     if (t.portada) return `<div class="portada"><img src="${esc(t.portada)}" alt="" loading="lazy">${t.youtubeId ? `<span class="play">${TXT.video}</span>` : ""}</div>`;
     if (t.youtubeId) return `<div class="portada"><img src="${ytThumb(t.youtubeId)}" alt="" loading="lazy"><span class="play">${TXT.video}</span></div>`;
     return `<div class="portada vacia" style="--tono:${tono(t.categoria)}"><span>${esc(nombreCat(t.categoria || ""))}</span></div>`;
@@ -205,7 +209,7 @@
             <h3>${esc(tx(t, "titulo"))}</h3>
             <p>${esc(tx(t, "resumen"))}</p>
             ${extras ? `<span class="extras">${extras}</span>` : ""}
-            ${t.texto ? `<span class="leer-mas">${TXT.leerMas} <span aria-hidden="true">→</span></span>` : ""}
+            ${t.proximamente ? `<span class="etq-prox">${TXT.proximamente}</span>` : t.texto ? `<span class="leer-mas">${TXT.leerMas} <span aria-hidden="true">→</span></span>` : ""}
           </div>
         </button>
         ${serie}
@@ -229,6 +233,21 @@
   const modal = $("modal");
   const abrir = (t) => {
     const titulo = tx(t, "titulo");
+    if (t.proximamente) {
+      $("modalCont").innerHTML = `
+      <article class="articulo" tabindex="-1">
+        ${meta(t)}
+        <h2>${esc(titulo)}</h2>
+        ${tx(t, "resumen") ? `<p class="entradilla">${esc(tx(t, "resumen"))}</p>` : ""}
+        ${imgProx ? `<div class="m-media prox"><img src="${esc(imgProx)}" alt="${TXT.proximamente}" onerror="this.remove()"></div>` : ""}
+        <p class="aviso-prox">${TXT.enPreparacion}</p>
+      </article>`;
+      document.title = `${titulo} · ${tx(S, "nombreWeb")}`;
+      if (!modal.open) modal.showModal();
+      modal.querySelector(".articulo").focus({ preventScroll: true });
+      modal.scrollTop = 0;
+      return;
+    }
     let media = "";
     if (t.youtubeId) media = `<div class="m-media">${ytBoton(t.youtubeId, titulo)}</div>`;
     else if (t.portada) media = `<div class="m-media"><img src="${esc(t.portada)}" alt=""></div>`;
