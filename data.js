@@ -54,6 +54,8 @@ Texto del apartado. Con **dos asteriscos** pones negrita.
 2. Segundo paso
 `,                                         // el texto completo va entre comillas invertidas ` `
       portada: "",                         // foto de portada: "img/mi-foto.jpg"
+      portadaCredito: "",                  // opcional: autor y licencia de la foto (sale bajo la imagen)
+      portadaCreditoUrl: "",               // opcional: enlace a la fuente de la foto
       youtubeId: "",                       // vídeo principal: lo que va tras "v=" en YouTube
       videoProximamente: false,            // true = aviso "vídeo en preparación" con enlace a tu canal
       fotos: [],                           // más fotos: ["img/a.jpg", "img/b.jpg"]
@@ -260,7 +262,9 @@ Esta distinción es esencial: identificar un mecanismo experimental no equivale 
 
 > Las neuronas no trabajan solas. Comprender su diálogo con la glía permite estudiar el dolor desde una perspectiva más completa y explorar posibles dianas terapéuticas, sin convertir una línea de investigación prometedora en una explicación única ni en una promesa de curación.
 `,
-      portada: "img/glia-microglia.jpg",
+      portada: "img/glia-astrocitos.jpg",
+      portadaCredito: "Imagen: astrocitos y oligodendrocitos en cultivo. Yirui Sun, Wellcome Collection (CC BY 4.0)",
+      portadaCreditoUrl: "https://wellcomecollection.org/works/z8ku7j98",
       youtubeId: "",
       fotos: [],
       videos: [],
