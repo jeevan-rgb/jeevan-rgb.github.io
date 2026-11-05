@@ -149,6 +149,13 @@ section.temas, section.sobre { padding: 3.5rem 0 4rem; }
 .tarjeta.destacada p { font: 400 1.12rem/1.55 var(--serif); }
 .vacio { color: var(--suave); }
 
+/* Temas aún sin contenido */
+.portada.prox, .m-media.prox { background: #e8e8e8; }
+.portada.prox img, .m-media.prox img { object-fit: contain; image-rendering: pixelated; }
+.tarjeta:hover .portada.prox img { transform: none; }
+.etq-prox { align-self: flex-start; margin-top: .35rem; font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); border: 1px solid var(--linea); padding: .2rem .55rem; }
+.aviso-prox { font: italic 400 1.15rem/1.6 var(--serif); color: var(--suave); margin: 0; }
+
 /* Sobre mí */
 .sobre { border-top: 1px solid var(--tinta); display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
 .sobre-cuerpo { display: flex; gap: 1.75rem; align-items: flex-start; }
