@@ -48,6 +48,7 @@ window.SITE = {
   },
 
   foto: "", // ejemplo: "img/yo.jpg"
+  imagenProximamente: "img/proximamente.gif", // imagen de los temas que aún no tienen contenido
 
   // tipos: email, youtube, instagram, x, tiktok, github, web
   enlaces: [
@@ -84,6 +85,7 @@ Texto del apartado. Con **dos asteriscos** pones negrita.
       portadaCreditoUrl: "",               // opcional: enlace a la fuente de la foto
       youtubeId: "",                       // vídeo principal: lo que va tras "v=" en YouTube
       videoProximamente: false,            // true = aviso "vídeo en preparación" con enlace a tu canal
+      proximamente: false,                 // true = tema aún sin contenido: muestra la imagen de "próximamente"
       fotos: [],                           // más fotos: ["img/a.jpg", "img/b.jpg"]
       videos: [],                          // más vídeos: ["ID1", "ID2"]
       enlaces: [],                         // [{ texto: "Artículo original", url: "https://..." }]
@@ -478,6 +480,7 @@ This distinction is essential: identifying an experimental mechanism is not the 
     },
     {
       titulo: "El ejercicio como medicina",
+      proximamente: true,
       fecha: "2026-10-12",
       categoria: "Movimiento",
       resumen: "Qué pasa en el cuerpo cuando nos movemos, y por qué se receta igual que un fármaco.",
@@ -498,6 +501,7 @@ Exercise has effects on the heart, muscles, bones, metabolism and brain. That is
     },
     {
       titulo: "Medir el cuerpo con el móvil",
+      proximamente: true,
       fecha: "2026-10-05",
       categoria: "Tecnología",
       resumen: "¿Puede un smartphone medir cuánto dobla tu rodilla tan bien como un aparato clínico?",
