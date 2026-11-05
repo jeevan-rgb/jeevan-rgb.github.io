@@ -28,8 +28,8 @@ window.SITE = {
 
   // tipos: email, youtube, instagram, x, tiktok, github, web
   enlaces: [
-    { tipo: "youtube", url: "https://www.youtube.com/@tu-canal" },
-    { tipo: "email", url: "mailto:tu-correo@ejemplo.com" },
+    { tipo: "youtube", url: "https://youtube.com/@latrincheraacademica?si=9Zzzkf5Oq42PKWPV" },
+    { tipo: "Research Ghate", url: "https://www.researchgate.net/profile/Rafael-Jimenez-Lopez-2?ev=hdr_xprf" },
   ],
 
   // ---------- 2. TEMAS ----------
