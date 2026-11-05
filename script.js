@@ -160,6 +160,7 @@
     let media = "";
     if (t.youtubeId) media = `<div class="m-media">${ytBoton(t.youtubeId, t.titulo)}</div>`;
     else if (t.portada) media = `<div class="m-media"><img src="${esc(t.portada)}" alt=""></div>`;
+    if (media && !t.youtubeId && t.portadaCredito) media += `<p class="credito">${t.portadaCreditoUrl ? `<a href="${esc(t.portadaCreditoUrl)}" target="_blank" rel="noopener">${esc(t.portadaCredito)}</a>` : esc(t.portadaCredito)}</p>`;
 
     const parrafos = formatear(t.texto);
     const canal = ((S.enlaces || []).find((e) => e.tipo === "youtube") || {}).url;
