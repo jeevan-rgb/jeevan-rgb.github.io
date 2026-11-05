@@ -48,7 +48,7 @@ window.SITE = {
   },
 
   foto: "", // ejemplo: "img/yo.jpg"
-  imagenProximamente: "img/Gato%20enciende%20la%20luz_%20Pr%C3%B3ximamente.gif", // imagen de los temas que aún no tienen contenido
+  imagenProximamente: "img/Gato%20enciende%20la%20luz_%20Pro%CC%81ximamente.gif", // imagen de los temas que aún no tienen contenido
 
   // tipos: email, youtube, instagram, x, tiktok, github, web
   enlaces: [
