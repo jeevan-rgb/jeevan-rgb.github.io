@@ -230,18 +230,45 @@ Si te ha picado la curiosidad: Peter Watts publicó Visión ciega con una licenc
     },
     {
       titulo: "La glía: las células olvidadas del cerebro",
-      fecha: "2026-10-20",
+      fecha: "2026-11-05",
       categoria: "Cerebro",
-      resumen: "No solo hay neuronas. Las células gliales tienen mucho que decir, también en el dolor crónico.",
-      texto:
-        "Durante décadas se pensó que las células gliales eran solo el pegamento del sistema nervioso. " +
-        "Hoy sabemos que participan en la comunicación entre neuronas, fabrican la mielina y actúan como sistema inmunitario del cerebro.\n\n" +
-        "La microglía, en particular, se estudia mucho por su papel en el mantenimiento del dolor crónico.",
-      portada: "",
+      resumen: "El cerebro no funciona solo gracias a las neuronas. Las células gliales mantienen su entorno, participan en la comunicación nerviosa y ayudan a proteger el sistema nervioso. Algunas también intervienen en los mecanismos que pueden mantener el dolor crónico: una línea de investigación prometedora, aunque todavía con preguntas abiertas.",
+      subtitulo: "",
+      texto: `
+## Mucho más que un soporte
+Cuando pensamos en el cerebro, solemos imaginar neuronas conectadas entre sí. Sin embargo, estas no trabajan solas. A su alrededor existe una comunidad de células, la glía, que participa activamente en el funcionamiento del sistema nervioso. Durante mucho tiempo se destacó sobre todo su papel de sostén; hoy sabemos que también regula el ambiente en el que las neuronas viven y se comunican.
+
+La glía no es un único tipo de célula:
+
+- **Astrocitos.** Ayudan a mantener el equilibrio químico que necesitan las neuronas, les proporcionan apoyo metabólico y modulan la comunicación en las sinapsis, los puntos de contacto entre células nerviosas.
+- **Oligodendrocitos.** Forman la mielina del sistema nervioso central, una envoltura que facilita la transmisión de los impulsos nerviosos.
+- **Microglía.** Desempeña funciones de vigilancia y defensa inmunitaria, y participa en la retirada de restos celulares.
+
+Estas tareas se coordinan: no son departamentos aislados.
+
+## Cuando el sistema de protección amplifica las señales
+El interés por la glía ha crecido especialmente en la investigación del dolor persistente. Tras una lesión nerviosa, la microglía y los astrocitos pueden cambiar su actividad y liberar moléculas que modifican la comunicación con las neuronas. En determinadas circunstancias, estas interacciones favorecen un entorno inflamatorio y aumentan la excitabilidad de los circuitos que procesan las señales relacionadas con el daño.
+
+Una consecuencia posible es la **sensibilización central**: las neuronas del sistema nervioso central responden con mayor intensidad a determinadas entradas sensoriales. Para entenderlo, podemos imaginar un sistema de alarma cuyo volumen ha aumentado. Una señal que antes provocaba una respuesta moderada puede generar una respuesta más intensa. La glía puede contribuir a ese ajuste del volumen, pero no es su único regulador ni explica por sí sola todos los casos de dolor crónico.
+
+Además, estas interacciones no ocurren únicamente en el cerebro. La médula espinal constituye otro lugar importante de comunicación entre neuronas y células gliales. Por eso, estudiar el dolor implica observar redes y mecanismos distribuidos por el sistema nervioso, no buscar una sola célula responsable.
+
+## Qué sabemos y qué falta por demostrar
+Una parte importante de los mecanismos descritos procede de experimentos con animales. En personas, los estudios de neuroimagen han encontrado cambios en marcadores relacionados con la actividad glial en algunas condiciones dolorosas, como la fibromialgia. Estos resultados aportan pistas, pero detectar un marcador no demuestra por sí solo que la glía sea la causa del dolor de una persona.
+
+Esta distinción es esencial: identificar un mecanismo experimental no equivale a disponer de un tratamiento eficaz y seguro. Las diferencias entre especies y la diversidad de las funciones gliales dificultan trasladar los hallazgos a la práctica clínica. El reto no consiste simplemente en «apagar» estas células, porque también cumplen funciones necesarias de protección y mantenimiento.
+
+> Las neuronas no trabajan solas. Comprender su diálogo con la glía permite estudiar el dolor desde una perspectiva más completa y explorar posibles dianas terapéuticas, sin convertir una línea de investigación prometedora en una explicación única ni en una promesa de curación.
+`,
+      portada: "img/glia-microglia.jpg",
       youtubeId: "",
       fotos: [],
       videos: [],
-      enlaces: [],
+      enlaces: [
+        { texto: "Revisión científica sobre astrocitos y dolor crónico (PubMed Central)", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10043112/" },
+        { texto: "Francis Crick Institute (2025): la red glía-sistema inmunitario", url: "https://www.crick.ac.uk/research/publications/the-glia-immune-network-astrocytes-and-oligodendrocytes-as-microglial-co-ordinators-in-health-and-disease" },
+        { texto: "Comisión Europea (CORDIS): proyecto TOBeATPAIN sobre células no neuronales y dolor", url: "https://cordis.europa.eu/article/id/442620-non-neuronal-cells-like-micro-glia-and-macrophages-regulate-pain" },
+      ],
     },
     {
       titulo: "El ejercicio como medicina",
