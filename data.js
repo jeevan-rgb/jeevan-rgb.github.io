@@ -1,4 +1,4 @@
-/* =====================================================================
+l/* =====================================================================
    AQUÍ SE EDITA TODA LA WEB
    ---------------------------------------------------------------------
    Solo tienes que tocar este archivo. Tres partes:
@@ -15,7 +15,7 @@
 window.SITE = {
   // ---------- 1. DATOS BÁSICOS ----------
   nombreWeb: "Cuaderno de ciencia",
-  autor: "Rafa",
+  autor: "Rafael",
   etiqueta: "Divulgación científica",           // línea pequeña sobre el título
   titular: "Cuaderno de ciencia",
   intro:
