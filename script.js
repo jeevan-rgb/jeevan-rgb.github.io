@@ -1,4 +1,9 @@
 (function () {
+  if (!window.SITE) {
+    document.querySelector("main").insertAdjacentHTML("afterbegin",
+      '<div style="margin:2rem 0;padding:1rem 1.25rem;border:1px solid #9b2c2c;border-left:4px solid #9b2c2c;background:#f8eeee;color:#5a1a1a;font-size:.95rem">' +
+      '<strong>No se ha podido leer el contenido (data.js).</strong><br>Revisa el último cambio: suele ser una coma o unas comillas que faltan, o un carácter suelto escrito sin querer.</div>');
+  }
   const S = window.SITE || {};
   const $ = (id) => document.getElementById(id);
   const esc = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
