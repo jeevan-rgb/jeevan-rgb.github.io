@@ -141,6 +141,9 @@ dialog[open] { animation: lateral .28s ease; }
 .articulo h2 { font-size: clamp(2rem, 4.5vw, 2.9rem); letter-spacing: -.015em; margin-bottom: 1.25rem; }
 .articulo .entradilla { font: italic 400 1.25rem/1.5 var(--serif); color: var(--suave); margin: 0 0 2rem; }
 .m-media { position: relative; aspect-ratio: 16 / 9; background: #111; margin: 0 0 2.25rem; }
+.m-media:has(+ .credito) { margin-bottom: .6rem; }
+.credito { margin: 0 0 2.25rem; font-size: .78rem; color: var(--suave); }
+.credito a { color: inherit; }
 .m-media img, .m-media iframe { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: 0; }
 .cuerpo-texto p { font: 400 1.15rem/1.75 var(--serif); color: var(--tinta); margin: 0 0 1.25rem; max-width: 65ch; }
 .cuerpo-texto h4 { font: 600 1.45rem/1.25 var(--serif); color: var(--tinta); margin: 2.25rem 0 .9rem; }
